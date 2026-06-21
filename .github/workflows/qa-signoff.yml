@@ -2,7 +2,7 @@ name: QA Sign-off
 
 on:
   push:
-    branches: [main]
+    branches: [sandbox]
     paths: ["qa/tests/agent-generated/**"]
 
 jobs:
