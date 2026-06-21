@@ -16,6 +16,7 @@
     "frontend"
   ],
   "scripts": {
+    "agent:check-ticket": "tsx agent/checkTicket.ts",
     "agent:start": "tsx agent/run.ts start",
     "agent:resume": "tsx agent/run.ts resume",
     "dev": "concurrently -n Node,Vite -c green,blue \"npm run dev -w backend\" \"npm run dev -w frontend\"",
