@@ -1,0 +1,35 @@
+name: QA CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ["qa/**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+      - name: Extract Jira key
+        if: always()
+        id: jira
+        run: echo "key=$(echo '${{ github.event.pull_request.title }}' | grep -oE '[A-Z]+-[0-9]+' | head -1)" >> "$GITHUB_OUTPUT"
+
+      - name: Comment CI result on Jira
+        if: always() && steps.jira.outputs.key != ''
+        run: |
+          curl -s -u "${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}" \
+            -X POST -H "Content-Type: application/json" \
+            "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ steps.jira.outputs.key }}/comment" \
+            -d "{\"body\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"CI ${{ job.status }} - PR #${{ github.event.pull_request.number }}\"}]}]}}"

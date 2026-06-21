@@ -1,0 +1,21 @@
+name: QA Sign-off
+
+on:
+  push:
+    branches: [main]
+    paths: ["qa/tests/agent-generated/**"]
+
+jobs:
+  signoff:
+    runs-on: ubuntu-latest
+    environment: qa-signoff
+    steps:
+      - uses: actions/checkout@v4
+      - id: jira
+        run: echo "key=$(git log -1 --pretty=%B | grep -oE '[A-Z]+-[0-9]+' | head -1)" >> "$GITHUB_OUTPUT"
+      - if: steps.jira.outputs.key != ''
+        run: |
+          curl -s -u "${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}" \
+            -X POST -H "Content-Type: application/json" \
+            "${{ secrets.JIRA_BASE_URL }}/rest/api/3/issue/${{ steps.jira.outputs.key }}/transitions" \
+            -d '{"transition":{"id":"${{ secrets.JIRA_TRANSITION_DONE_ID }}"}}'

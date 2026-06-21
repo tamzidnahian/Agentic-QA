@@ -16,14 +16,26 @@
     "frontend"
   ],
   "scripts": {
-    "dev": "concurrently --names 'Node,Vite' -c 'green,blue' 'npm run dev -w backend' 'npm run dev -w frontend'",
+    "agent:start": "tsx agent/run.ts start",
+    "agent:resume": "tsx agent/run.ts resume",
+    "dev": "concurrently -n Node,Vite -c green,blue \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "sqlz": "npx -w backend sequelize-cli",
     "start": "npm run build -w frontend && npm run start -w backend",
     "test": "vitest"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^26.0.0",
     "@vitejs/plugin-react-swc": "^4.2.3",
     "concurrently": "^9.2.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
     "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.2.0",
+    "@langchain/langgraph": "^1.4.4",
+    "@langchain/openai": "^1.5.1",
+    "zod": "^4.4.3"
   }
 }
