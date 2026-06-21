@@ -2,7 +2,7 @@ name: QA CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [sandbox]
     paths: ["qa/**"]
 
 jobs:
