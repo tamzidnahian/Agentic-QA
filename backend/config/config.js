@@ -1,27 +1,27 @@
+const path = require('path');
+const dotenv = require('dotenv');
+
+dotenv.config({
+  path: path.resolve(__dirname, '../.env'),
+});
+
+/**
+ * Creates a local SQLite configuration.
+ *
+ * Each environment receives a different database file so test data
+ * does not affect development data.
+ */
+function createSqliteConfig(filename) {
+  return {
+    dialect: 'sqlite',
+    storage: path.resolve(__dirname, `../database/${filename}`),
+    logging: false,
+  };
+}
+
 /** @type {import('sequelize').Options} */
 module.exports = {
-  development: {
-    username: process.env.DEV_DB_USERNAME,
-    password: process.env.DEV_DB_PASSWORD,
-    database: process.env.DEV_DB_NAME,
-    host: process.env.DEV_DB_HOSTNAME,
-    dialect: process.env.DEV_DB_DIALECT,
-    logging: process.env.DEV_DB_LOGGING,
-  },
-  test: {
-    username: process.env.TEST_DB_USERNAME,
-    password: process.env.TEST_DB_PASSWORD,
-    database: process.env.TEST_DB_NAME,
-    host: process.env.TEST_DB_HOSTNAME,
-    dialect: process.env.TEST_DB_DIALECT,
-    logging: process.env.TEST_DB_LOGGING,
-  },
-  production: {
-    username: process.env.PROD_DB_USERNAME,
-    password: process.env.PROD_DB_PASSWORD,
-    database: process.env.PROD_DB_NAME,
-    host: process.env.PROD_DB_HOSTNAME,
-    dialect: process.env.PROD_DB_DIALECT,
-    logging: process.env.PROD_DB_LOGGING,
-  },
+  development: createSqliteConfig('conduit-development.sqlite'),
+  test: createSqliteConfig('conduit-test.sqlite'),
+  production: createSqliteConfig('conduit-production.sqlite'),
 };

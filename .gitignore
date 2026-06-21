@@ -36,6 +36,13 @@ dist
 .env.development.local
 .env.test.local
 .env.production.local
+backend/.env
+.env.qa
+agent-output/
+qa/.agent-state/
+playwright-report/
+test-results/
+backend/database/*.sqlite
 
 #log files
 npm-debug.log*
